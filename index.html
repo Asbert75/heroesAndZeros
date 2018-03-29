@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Betting for everyone" />
+    <meta name="keywords" content="betting, simple, money, rich, free, fun" />
+    <meta name="author" content="Heroes and zeroes dev">
+    <meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="images/fav.png" />
+    <title>Heroes and Zeroes</title>
+    <!-- betting, money, free -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="node_modules/@material/fab/dist/mdc.fab.min.css" rel="stylesheet" />
+    <script src="node_modules/material-components-web/dist/material-components-web.min.js"></script>
+    <script src="js/nodep-date-input-polyfill.dist.js"></script>
+
+    <link href="node_modules/@material/button/dist/mdc.button.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="js/functions.js"></script>
+    <script src="js/bet.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/user.js"></script>
+	<script src="js/filter.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bet.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+</head>
+
+<body>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+            appId: '221780665034112',
+            autoLogAppEvents: true,
+            xfbml: true,
+            version: 'v2.12'
+            });
+        };
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+            return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <div id="loadingScreen" class="loadingScreen">
+        <img class="loadingScreenImg" src="images/heroes.svg" alt="Heroes">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+
+    <div id="loginWrapper" class="loginWrapper hidden">
+    <div class="signUpWrapper">
+        <div class="becomeAnAddict">
+        <h2 class="header">Start betting with friends</h2>
+        <p class="subHeader">Get a starting bonus of 5.000 Hero Qoins</p>
+        <div class="addictParagraph">
+            <p>Now you can create your own betting experience with Heroes and Zeros! Create a bet and invite your friends to start betting. Browse other user bets and beat them and win their hero coins! Do you have what it takes to become a Hero? Sign in and join the fun now!
+            </p>
+        </div>
+        <button class="loginBtns" id="openModalBtn">Start Betting</button>
+        </div>
+        <div class="howToPlay">
+        <div class="triangle-down"></div>
+        <div class="item">
+            <h2 class="htpText">1</h2>
+            <p class="htpText">Sign in</p>
+            <p class="htpText">The first thing you're going to need to do is sign in. Simply click the button above and choose your prefered sign-in provider.
+            </p>
+        </div>
+        <div class="item">
+            <h2 class="htpText">2</h2>
+            <p class="htpText">Place bet</p>
+            <p class="htpText">After you have signed in, it's easy as a cake. All you have to do is find a bet you think you know the outcome to, and place a bet!
+            </p>
+        </div>
+        <div class="item">
+            <h2 class="htpText">3</h2>
+            <p class="htpText">Get coins</p>
+            <p class="htpText">Now just wait, and then reap your rewards! It's as easy as that, 1-2-3.
+            </p>
+        </div>
+        </div>
+    </div>
+
+    <div id="cover" class="cover hidden"></div>
+        <div id="loginModal" class="loginModal hidden">
+            <h3 id="loginHeader">Sign in</h3>
+            <p id="loginText">Sign in with Facebook or Google</p>
+            <button class="loginBtns" id="btnSignInWithRedirectFB">Sign in with Facebook</button>
+			<button class="loginBtns" id="btnSignInWithRedirectGoogle"> Sign in with Google</button>
+        </div>
+    </div>
+
+    <div id="createBetCover" class="createBetCover"></div>
+    <div id="closeMenuCover" class="closeMenuCover hidden"></div>
+
+    <div id="contentWrapper" class="contentWrapper hidden">
+
+        <div class="topbar">
+            <nav>
+                <div class="mobileMenu">
+                    <button id="openMenu">&#9776;</button>
+                    <button id="closeMenu">×</button>
+                    <div id="menu">
+                        <a class="menuCreateBet" href="#"><i class="fas fa-plus-circle"></i> CREATE BET</a>
+                        <div></div>
+                        <a class="menuStatistics" href="#"><i class="far fa-chart-bar"></i> MY STATISTICS</a>
+                        <div></div>
+                        <a class="btnSignOut" href="#"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
+                    </div>
+                </div>
+
+                <div class="menu">
+                    <ul>
+                        <li><a class="menuCreateBet" href="#"><i class="fas fa-plus-circle"></i> CREATE BET</a></li>
+                        <li><a class="menuStatistics" href="#"><i class="far fa-chart-bar"></i> MY STATISTICS</a></li>
+                        <li><a class="btnSignOut" href="#"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="userArea">
+                <div class="profile">
+                    <div class="avatarWrapper">
+                        <img id="avatar" class="avatar displayImage" alt="Avatar" src="images/avatar.png"/>
+                    </div>
+                    <div class="userInfo">
+                        <div class="userWrapper">
+                            <p id="user" class="user text-dark"><span id="username" class="text-light name"></span></p>
+                        </div>
+                        <div class="relative-wrapper coin-wrapper">
+                            <p id="coins" class="acme text-light coins"></p>
+                            <img class="coin" src="images/coin.svg" alt="Coin Count"/>
+                        </div>
+                    </div>
+                    <div class="notificationsWrapper">
+                        <p id="notifications" class="acme text-light"><i class="material-icons">notifications</i></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="createBet" class="createBet">
+            <div class="createBetHeader">
+            <h2>Create a Bet</h2>
+            <button id="closeBet">×</button>
+            </div>
+            <form class="createBetForm">
+            <div class="formColumn">
+                <label for="title">Give your bet a short title</label><br>
+                <input class="createBetInput" id="title" required maxlength="25" type="text" placeholder="Ex. Election 2020"><br>
+
+                <label for="question" class="mainLabel">What is your bet question?</label><br>
+                <input class="createBetInput" id="question" required maxlength="50" type="text" placeholder="Ex. Who will win the Election in 2020?"><br>
+
+                <label for="betAmount" class="mainLabel">How many coins should players bet?</label><br>
+                <label for="betAmount" class="subLabel">Min 10, Max 50000</label>
+                <input class="createBetInput" id="betAmount" min="10" max="50000" type="number" placeholder="Ex. 50"><br>
+            </div>
+
+            <div class="formColumn">
+				<label for="lastBet" class="mainLabel">When should the bet end?</label><br>
+                <input class="createBetInput" id="lastBet" lang="en"><br>
+                <label for="endtime">When should betting close?</label><br>
+                <input class="createBetInput" id="endtime" lang="en"><br>
+            </div>
+
+            <div class="formColumn">
+                <label>What will the betting options be?</label><br>
+                <div id="inputOptionsDiv" class="inputOptionsDiv">
+                <p id="optionsError" class='hidden'>*You must add atleast 2 options.</p>
+                <input class="createBetInput inputOption" type="text" placeholder="Option">
+                <input class="createBetInput inputOption" type="text" placeholder="Option">
+                <button id="addOption" type="button" class="mdc-fab mdc-fab--mini material-icons addOption" aria-label="Favorite">
+                                <span class="mdc-fab__icon">add</span>
+                            </button>
+                </div>
+                <p id="errorBox" class="hidden">*You may only have a maximum of 20 options per bet.</p>
+            </div>
+            </form>
+            <div class="createBetBtn-wrapper">
+            <button onclick="createBet(event)" type="button" class="mdc-button createBetBtn">Create Bet</button>
+            </div>
+        </div>
+
+        <div class="removeBet">
+            <div>
+                <div class="createBetHeader">
+                    <h3>Remove bet</h3>
+                </div>
+                <p>Removing a bet is irreversible, all placed bets will be reimbursed.</p>
+                <h4>Are you sure you want to remove your bet?</h4>
+                <div>
+                    <button class="mdc-button removeBetBtn" id="yesRemoveBet">yes</button>
+                    <button class="mdc-button keepBetBtn" id="noRemoveBet">no</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bets">
+            <div class="betsHeader">
+                <button id="activeBetsBtn" class="size-24 text-light active">Active Bets <span id="activeBetsCounter" class="text-light">(0)</span></button>
+                <button id="createdBetsBtn" class="size-24 text-light">My Created Bets <span id="createdBetsCounter" class="text-light">(0)</span></button>
+                <button id="placedBetsBtn" class="size-24 text-light">My Placed Bets <span id="placedBetsCounter" class="text-light">(0)</span></button>
+            </div>
+            <div class="legend">
+                <div class="legendItem">
+                    <div class="legendColor legendDefault"></div>
+                    <p>Default color</p>
+                </div>
+                <div class="legendItem">
+                    <div class="legendColor legendWon"></div>
+                    <p>Won bet</p>
+                </div>
+                <div class="legendItem">
+                    <div class="legendColor legendLost"></div>
+                    <p>Lost bet</p>
+                </div>
+                <div class="legendItem">
+                    <div class="legendColor legendAwaitingWinner"></div>
+                    <p>Awaiting winner</p>
+                </div>
+            </div>
+            <div id="noResults" class='noResults hidden'>
+                <p class='size-14 text-light'>Sorry, we couldn't find any bets.</p>
+            </div>
+            <main class="grid"></main>
+        </div>
+    </div>
+</body>
+
+</html>
